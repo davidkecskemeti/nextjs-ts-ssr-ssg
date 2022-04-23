@@ -57,7 +57,7 @@ const Pokemon: React.FC<PokemonProps> = () => {
               </tr>
             </thead>
             <tbody>
-              {pokemon.stats.map(({ name, value }: any) => (
+              {pokemon?.stats?.map(({ name, value }: any) => (
                 <tr key={name}>
                   <td className={styles.attribute}>{name}</td>
                   <td>{value}</td>
