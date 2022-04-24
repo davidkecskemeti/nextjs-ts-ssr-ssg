@@ -6,6 +6,34 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import styles from "../../styles/Details.module.css";
 
+const BASE_URL = "http://localhost:3000";
+
+//Static side generation
+export async function getStaticPaths() {
+  const response = await fetch(`${BASE_URL}/pokemons.json`);
+  const pokemons = await response.json();
+
+  const paths = pokemons.map((p: any) => ({
+    params: { id: p.id.toString() },
+  }));
+  return { paths, fallback: false };
+}
+
+export async function getStaticProps() {
+  const response = await fetch(`${BASE_URL}/pokemons.json`);
+  return {
+    props: { pokemons: await response.json() },
+  };
+}
+
+// //Server side rendering
+// export async function getServerSideProps() {
+//   const response = await fetch(`${BASE_URL}/pokemon/${id}.json`);
+//   return {
+//     props: { pokemons: await response.json() },
+//   };
+// }
+
 interface PokemonProps {}
 
 const Pokemon: React.FC<PokemonProps> = () => {
@@ -13,7 +41,6 @@ const Pokemon: React.FC<PokemonProps> = () => {
     query: { id },
   } = useRouter();
 
-  const BASE_URL = "http://localhost:3000";
   const [pokemon, setPokemon] = useState<any>([]);
 
   useEffect(() => {
