@@ -5,18 +5,28 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 
-const Home: NextPage = () => {
-  const BASE_URL = "http://localhost:3000";
-  const [pokemons, setPokemons] = useState<any[]>([]);
+const BASE_URL = "http://localhost:3000";
 
-  useEffect(() => {
-    async function fetchData() {
-      const response = await fetch(`${BASE_URL}/pokemons.json`);
-      setPokemons(await response.json());
-    }
+//Server side rendering
+export async function getServerSideProps() {
+  const response = await fetch(`${BASE_URL}/pokemons.json`);
+  return {
+    props: { pokemons: await response.json() },
+  };
+}
 
-    fetchData();
-  }, []);
+const Home: NextPage = ({ pokemons }: any) => {
+  //Client side rendering
+  // const [pokemons, setPokemons] = useState<any[]>([]);
+
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     const response = await fetch(`${BASE_URL}/pokemons.json`);
+  //     setPokemons(await response.json());
+  //   }
+
+  //   fetchData();
+  // }, []);
 
   return (
     <div className={styles.container}>
@@ -27,7 +37,7 @@ const Home: NextPage = () => {
       </Head>
 
       <div className={styles.grid}>
-        {pokemons?.map((pokemon) => (
+        {pokemons?.map((pokemon: any) => (
           <div className={styles.card} key={pokemon.id}>
             <Link href="/pokemon/[id]" as={`/pokemon/${pokemon.id}`}>
               <a>
